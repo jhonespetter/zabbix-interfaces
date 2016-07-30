@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>3.0</version>
+    <date>2016-06-29T01:14:13Z</date>
+    <groups>
+        <group>
+            <name>Templates</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template-Interfaces-Linux_pfSense_v1</template>
+            <name>Template-Interfaces-Linux_pfSense_v1</name>
+            <description># Zabbix&#13;
+Zabbix Templates&#13;
+&#13;
+#============= Template-Interfaces-Linux_pfSense_vX&#13;
+Template-Interfaces-Linux_pfSense_v1 - 28/06/2016&#13;
+- Applications: Interfaces de rede | SpeedTest&#13;
+- Itens: SpeedTest Download | SpeedTest Upload | Gateway default | Latencia Iface | Latencia Google | Packet Loss&#13;
+- Triggers: Latencia Iface &gt;150ms | Packet Loss &gt;30%&#13;
+- Graphs: Latencia Google | Latencia Iface | SpeedTest&#13;
+&#13;
+#============= Alteração | Incremento&#13;
+&#13;
+#===================================================&#13;
+#============= Descrição &#13;
+- Template destinado a trazer informações de rede de firewall.&#13;
+&#13;
+#============= Itens&#13;
+SpeedTest Download: Teste download com speedtest-cli.&#13;
+SpeedTest Upload: Teste upload com speedtest-cli.&#13;
+Gateway default: Retorna qual ip do gateway default setado no firewall.&#13;
+Latencia Iface: Retornar a latencia, setando uma origem. No pfSense informando origem ip da wan e no Linux origem interface wan. &#13;
+Latencia Google: Retorna perf enviado no google.&#13;
+Packet Loss: Retorna porcentagem de perca de pacote saindo do gateway default para um destino.&#13;
+&#13;
+&#13;
+#============= OS Validado&#13;
+- Linux CentOS 7 | pfSense 2.3 &#13;
+&#13;
+#============= Configuração do Zabbbix Server&#13;
+zabbix_server.conf&#13;
+Timeout=30&#13;
+&#13;
+#============= Configuração do Zabbix Agent&#13;
+zabbix_agentd.conf&#13;
+Timeout=30&#13;
+UnsafeUserParameters=1&#13;
+&#13;
+#============= UserParameter Linux&#13;
+UserParameter=packet.loss[*],/bin/ping -q -n -c 5 $1 | grep &quot;packet loss&quot; | cut -d &quot; &quot; -f 6 | cut -d &quot;%&quot; -f1&#13;
+UserParameter=latencia.iface[*],/bin/ping -I $1 -q -n -c 5 $2 | grep rtt | cut -d&quot;/&quot; -f5&#13;
+UserParameter=gateway.default[*],curl -s http://ipecho.net/plain&#13;
+UserParameter=speedtest.upload[*],/usr/bin/speedtest-cli --bytes --simple | grep &quot;Upload:&quot; | cut -d &quot; &quot; -f2&#13;
+UserParameter=speedtest.download[*],/usr/bin/speedtest-cli --bytes --simple | grep &quot;Download:&quot; | cut -d &quot; &quot; -f2&#13;
+&#13;
+#============= UserParameter pfSense&#13;
+UserParameter=packet.loss[*],/bin/ping -q -n -c 5 $1 | grep &quot;packet loss&quot; | cut -d &quot; &quot; -f 6 | cut -d &quot;%&quot; -f1&#13;
+UserParameter=latencia.iface[*],/bin/ping -I $1 -q -n -c 5 $2 | grep rtt | cut -d&quot;/&quot; -f5&#13;
+UserParameter=gateway.default,curl -s http://ipecho.net/plain&#13;
+UserParameter=upload[*],/usr/bin/speedtest-cli --bytes --simple | grep &quot;Upload:&quot; | cut -d &quot; &quot; -f2&#13;
+UserParameter=download[*],/usr/bin/speedtest-cli --bytes --simple | grep &quot;Download:&quot; | cut -d &quot; &quot; -f2</description>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Interfaces de rede</name>
+                </application>
+                <application>
+                    <name>SpeedTest</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Gateway default</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>gateway.default[*]</key>
+                    <delay>3600</delay>
+                    <history>7</history>
+                    <trends>0</trends>
+                    <status>0</status>
+                    <value_type>4</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description>Linux&#13;
+UserParameter=gateway.default,curl -s http://ipecho.net/plain&#13;
+&#13;
+==================================&#13;
+&#13;
+pfSense&#13;
+UserParameter=gateway.default,curl -s http://ipecho.net/plain</description>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Interfaces de rede</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                </item>
+                <item>
+                    <name>Latencia Iface {$DESTINO}</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>latencia.iface[{$IFACE_OR_IP},{$DESTINO}]</key>
+                    <delay>60</delay>
+                    <history>7</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>0</value_type>
+                    <allowed_hosts/>
+                    <units>ms</units>
+                    <delta>0</delta>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description>Linux&#13;
+UserParameter=latencia.iface[*],/bin/ping -I $1 -q -n -c 5 $2 | grep rtt | cut -d&quot;/&quot; -f5&#13;
+&#13;
+============================&#13;
+&#13;
+pfSense&#13;
+UserParameter=latencia.iface[*],/sbin/ping -S $1 -q -n -c 5 $2 | grep round-trip | cut -d&quot;/&quot; -f5</description>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Interfaces de rede</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                </item>
+                <item>
+                    <name>Latencia Google</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>net.tcp.service.perf[tcp,{$GOOGLE1},53]</key>
+                    <delay>60</delay>
+                    <history>7</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>0</value_type>
+                    <allowed_hosts/>
+                    <units>s</units>
+                    <delta>0</delta>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Interfaces de rede</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                </item>
+                <item>
+                    <name>Packet Loss {$DESTINO}</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>packet.loss[{$DESTINO}]</key>
+                    <delay>120</delay>
+                    <history>7</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>0</value_type>
+                    <allowed_hosts/>
+                    <units>%</units>
+                    <delta>0</delta>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description>Linux&#13;
+UserParameter=packet.loss[*],/bin/ping -q -n -c 5 $1 | grep &quot;packet loss&quot; | cut -d &quot; &quot; -f 6 | cut -d &quot;%&quot; -f1&#13;
+==============================================&#13;
+&#13;
+pfSense&#13;
+UserParameter=packet.loss[*],/sbin/ping -q -n -c 5 $1 | grep &quot;packet loss&quot; | cut -d &quot; &quot; -f 7 | cut -d &quot;%&quot; -f1</description>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Interfaces de rede</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                </item>
+                <item>
+                    <name>SpeedTest Download</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>speedtest.download[*]</key>
+                    <delay>7200</delay>
+                    <history>7</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>0</value_type>
+                    <allowed_hosts/>
+                    <units>Mbps</units>
+                    <delta>0</delta>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex>h6m10</delay_flex>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description># Linux&#13;
+wget -O speedtest-cli https://raw.github.com/sivel/speedtest-cli/master/speedtest_cli.py&#13;
+chmod +x speedtest-cli&#13;
+mv speedtest-cli /usr/bin&#13;
+&#13;
+UserParameter=speedtest.download[*],/usr/bin/speedtest-cli --bytes --simple | grep &quot;Download:&quot; | cut -d &quot; &quot; -f2&#13;
+&#13;
+===========================================&#13;
+# pfSense&#13;
+Alterar interpretador para &quot;#!/usr/local/bin/python2&quot;&#13;
+fetch https://raw.github.com/sivel/speedtest-cli/master/speedtest_cli.py&#13;
+mv speedtest_cli.py speedtest-cli&#13;
+chmod +x speedtest-cli&#13;
+&#13;
+UserParameter=speedtest.download[*],/root/speedtest-cli --bytes --simple | grep &quot;Download:&quot; | cut -d &quot; &quot; -f2</description>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>SpeedTest</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                </item>
+                <item>
+                    <name>SpeedTest Upload</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>speedtest.upload[*]</key>
+                    <delay>7200</delay>
+                    <history>7</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>0</value_type>
+                    <allowed_hosts/>
+                    <units>Mbps</units>
+                    <delta>0</delta>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex>h6m10</delay_flex>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description># Linux&#13;
+wget -O speedtest-cli https://raw.github.com/sivel/speedtest-cli/master/speedtest_cli.py&#13;
+chmod +x speedtest-cli&#13;
+mv speedtest-cli /usr/bin&#13;
+&#13;
+UserParameter=speedtest.upload[*],/usr/bin/speedtest-cli --bytes --simple | grep &quot;Upload:&quot; | cut -d &quot; &quot; -f2&#13;
+&#13;
+===========================================&#13;
+# pfSense&#13;
+Alterar interpretador para &quot;#!/usr/local/bin/python2&quot;&#13;
+fetch https://raw.github.com/sivel/speedtest-cli/master/speedtest_cli.py&#13;
+mv speedtest_cli.py speedtest-cli&#13;
+chmod +x speedtest-cli&#13;
+&#13;
+UserParameter=speedtest.download[*],/root/speedtest-cli --bytes --simple | grep &quot;Upload:&quot; | cut -d &quot; &quot; -f2</description>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>SpeedTest</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                </item>
+            </items>
+            <discovery_rules/>
+            <macros/>
+            <templates/>
+            <screens/>
+        </template>
+    </templates>
+    <triggers>
+        <trigger>
+            <expression>{Template-Interfaces-Linux_pfSense_v1:latencia.iface[{$IFACE_OR_IP},{$DESTINO}].last()}&gt;150</expression>
+            <name>Latencia Iface &gt;150ms</name>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description/>
+            <type>0</type>
+            <dependencies/>
+        </trigger>
+        <trigger>
+            <expression>{Template-Interfaces-Linux_pfSense_v1:packet.loss[{$DESTINO}].last()}&gt;30</expression>
+            <name>Packet Loss &gt;30%</name>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description/>
+            <type>0</type>
+            <dependencies/>
+        </trigger>
+    </triggers>
+    <graphs>
+        <graph>
+            <name>Latencia Google</name>
+            <width>900</width>
+            <height>200</height>
+            <yaxismin>0.0000</yaxismin>
+            <yaxismax>100.0000</yaxismax>
+            <show_work_period>1</show_work_period>
+            <show_triggers>1</show_triggers>
+            <type>0</type>
+            <show_legend>1</show_legend>
+            <show_3d>0</show_3d>
+            <percent_left>0.0000</percent_left>
+            <percent_right>0.0000</percent_right>
+            <ymin_type_1>1</ymin_type_1>
+            <ymax_type_1>0</ymax_type_1>
+            <ymin_item_1>0</ymin_item_1>
+            <ymax_item_1>0</ymax_item_1>
+            <graph_items>
+                <graph_item>
+                    <sortorder>0</sortorder>
+                    <drawtype>0</drawtype>
+                    <color>2774A4</color>
+                    <yaxisside>0</yaxisside>
+                    <calc_fnc>2</calc_fnc>
+                    <type>0</type>
+                    <item>
+                        <host>Template-Interfaces-Linux_pfSense_v1</host>
+                        <key>net.tcp.service.perf[tcp,{$GOOGLE1},53]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Latencia Iface</name>
+            <width>900</width>
+            <height>200</height>
+            <yaxismin>0.0000</yaxismin>
+            <yaxismax>100.0000</yaxismax>
+            <show_work_period>1</show_work_period>
+            <show_triggers>1</show_triggers>
+            <type>0</type>
+            <show_legend>1</show_legend>
+            <show_3d>0</show_3d>
+            <percent_left>0.0000</percent_left>
+            <percent_right>0.0000</percent_right>
+            <ymin_type_1>1</ymin_type_1>
+            <ymax_type_1>0</ymax_type_1>
+            <ymin_item_1>0</ymin_item_1>
+            <ymax_item_1>0</ymax_item_1>
+            <graph_items>
+                <graph_item>
+                    <sortorder>0</sortorder>
+                    <drawtype>0</drawtype>
+                    <color>000088</color>
+                    <yaxisside>0</yaxisside>
+                    <calc_fnc>2</calc_fnc>
+                    <type>0</type>
+                    <item>
+                        <host>Template-Interfaces-Linux_pfSense_v1</host>
+                        <key>latencia.iface[{$IFACE_OR_IP},{$DESTINO}]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>SpeedTest</name>
+            <width>900</width>
+            <height>200</height>
+            <yaxismin>0.0000</yaxismin>
+            <yaxismax>100.0000</yaxismax>
+            <show_work_period>1</show_work_period>
+            <show_triggers>1</show_triggers>
+            <type>0</type>
+            <show_legend>1</show_legend>
+            <show_3d>0</show_3d>
+            <percent_left>0.0000</percent_left>
+            <percent_right>0.0000</percent_right>
+            <ymin_type_1>1</ymin_type_1>
+            <ymax_type_1>0</ymax_type_1>
+            <ymin_item_1>0</ymin_item_1>
+            <ymax_item_1>0</ymax_item_1>
+            <graph_items>
+                <graph_item>
+                    <sortorder>0</sortorder>
+                    <drawtype>0</drawtype>
+                    <color>1A7C11</color>
+                    <yaxisside>0</yaxisside>
+                    <calc_fnc>2</calc_fnc>
+                    <type>0</type>
+                    <item>
+                        <host>Template-Interfaces-Linux_pfSense_v1</host>
+                        <key>speedtest.upload[*]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <drawtype>0</drawtype>
+                    <color>0000CC</color>
+                    <yaxisside>0</yaxisside>
+                    <calc_fnc>2</calc_fnc>
+                    <type>0</type>
+                    <item>
+                        <host>Template-Interfaces-Linux_pfSense_v1</host>
+                        <key>speedtest.download[*]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+    </graphs>
+</zabbix_export>
